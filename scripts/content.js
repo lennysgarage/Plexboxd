@@ -14,10 +14,10 @@ new MutationObserver(() => {
 function updateRatings() {
   let originalTitle = document.querySelector('[data-testid=metadata-title]').textContent.toLowerCase();
   originalTitle = originalTitle.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digitFromSuperscript);
-  originalTitle = originalTitle.replace("'", "");
-  originalTitle = originalTitle.replace(" & ", "-");
+  originalTitle = originalTitle.replace(/'/g, "");
+  originalTitle = originalTitle.replace(/ & /g, "-");
   originalTitle = originalTitle.replace(/\W/g, "-");
-  originalTitle = originalTitle.replace("--", "-"); // blasphemy...
+  originalTitle = originalTitle.replace(/--/g, "-"); // blasphemy...
 
   if (originalTitle.endsWith("-")) {
     originalTitle = originalTitle.substring(0, originalTitle.length - 1)
