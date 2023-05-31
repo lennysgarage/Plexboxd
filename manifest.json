@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Plexboxd",
+  "version": "1.0",
+  "description": "View letterboxd ratings for your movies on plex.",
+
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "192": "images/icon-192.png",
+    "512": "images/icon-512.png"
+  },
+  "web_accessible_resources": [{
+    "resources": ["images/letterboxd-decal-dots-pos-rgb-500px.png"],
+    "matches": ["<all_urls>"]
+  }],
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "css": ["letterboxd.css"],
+      "matches": [
+        "https://app.plex.tv/desktop/*"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "host_permissions": ["https://letterboxd.com/*"]
+}
