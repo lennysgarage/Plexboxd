@@ -12,32 +12,44 @@ new MutationObserver(() => {
 }).observe(document, { subtree: true, childList: true });
 
 async function updateRatings() {
-  let originalTitle = document.querySelector('[data-testid=metadata-title]').textContent.toLowerCase();
-  originalTitle = originalTitle.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digitFromSuperscript);
-  originalTitle = originalTitle.replace(/'/g, "");
-  originalTitle = originalTitle.replace(/ & /g, "-");
-  originalTitle = originalTitle.replace(/\W/g, "-");
-  originalTitle = originalTitle.replace(/--/g, "-");
-
-  if (originalTitle.endsWith("-")) {
-    originalTitle = originalTitle.substring(0, originalTitle.length - 1)
-  }
+  const originalTitle = document.querySelector('[data-testid=metadata-title]').textContent.toLowerCase();
+  const title = parseMovieTitle(originalTitle);
 
   // fetch with year first
+  const titleWithYear = addYear(title);
+  console.log(titleWithYear)
+
+  const movieWithYear = await chrome.runtime.sendMessage({ title: titleWithYear });
+  if (!parseHTML(movieWithYear, titleWithYear)) {
+    console.log(title)
+    const movieWithoutYear = await chrome.runtime.sendMessage({ title: title });
+
+    parseHTML(movieWithoutYear, title)
+  }
+}
+
+function parseMovieTitle(title) {
+  title = title.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digitFromSuperscript);
+  title = title.replace(/'/g, "");
+  title = title.replace(/ & /g, "-");
+  title = title.replace(/\W/g, "-");
+  title = title.replace(/--/g, "-");
+
+  if (title.endsWith("-")) {
+    title = title.substring(0, title.length - 1)
+  }
+
+  return title;
+}
+
+function addYear(title) {
   let year = document.querySelector('[data-testid=metadata-line1]').textContent;
   year = year.split("    ");
   if (year.length > 1) {
     year = year[0];
   }
-  let titleWithYear = originalTitle + "-" + year
 
-  console.log(titleWithYear)
-  let movieWithYear = await chrome.runtime.sendMessage({ title: titleWithYear });
-  if (!parseHTML(movieWithYear, titleWithYear)) {
-    console.log(originalTitle)
-    let movieWithoutYear = await chrome.runtime.sendMessage({ title: originalTitle });
-    parseHTML(movieWithoutYear, originalTitle)
-  }
+  return titleWithYear = title + "-" + year;
 }
 
 function parseHTML(html, title) {
@@ -66,7 +78,7 @@ function parseHTML(html, title) {
     div.setAttribute('href', `https://letterboxd.com/film/${title}`)
     div.innerText = rating + "/5.00";
     div.classList.add("letterboxd-rating");
-    ratings.appendChild(div);    
+    ratings.appendChild(div);
 
     return true
   }
