@@ -34,10 +34,8 @@ function parseMovieTitle(title) {
   title = title.replace(/ & /g, "-");
   title = title.replace(/\W/g, "-");
   title = title.replace(/--/g, "-");
+  title = title.replace(/-$/, "");
 
-  if (title.endsWith("-")) {
-    title = title.substring(0, title.length - 1)
-  }
 
   return title;
 }
