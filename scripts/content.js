@@ -11,13 +11,13 @@ new MutationObserver(() => {
   }
 }).observe(document, { subtree: true, childList: true });
 
-function updateRatings() {
+async function updateRatings() {
   let originalTitle = document.querySelector('[data-testid=metadata-title]').textContent.toLowerCase();
   originalTitle = originalTitle.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digitFromSuperscript);
   originalTitle = originalTitle.replace(/'/g, "");
   originalTitle = originalTitle.replace(/ & /g, "-");
   originalTitle = originalTitle.replace(/\W/g, "-");
-  originalTitle = originalTitle.replace(/--/g, "-"); // blasphemy...
+  originalTitle = originalTitle.replace(/--/g, "-");
 
   if (originalTitle.endsWith("-")) {
     originalTitle = originalTitle.substring(0, originalTitle.length - 1)
@@ -32,76 +32,46 @@ function updateRatings() {
   let titleWithYear = originalTitle + "-" + year
 
   console.log(titleWithYear)
-  chrome.runtime.sendMessage({ title: titleWithYear },
-    html => {
-      let parser = new DOMParser();
-      let doc = parser.parseFromString(html, 'text/html');
-
-      let rating = doc.getElementsByName("twitter:data2")
-      if (rating) {
-        rating = rating[0].content
-        if (rating) {
-          rating = rating.split(" ")[0]
-        }
-      }
-
-      const ratings = document.querySelector('[data-testid="metadata-ratings"]');
-      if (ratings) {
-        const lImg = document.createElement("img");
-        lImg.setAttribute('src', "chrome-extension://__MSG_@@ngilbhhfgkjkfllefakjhieneaoknbfn/../images/letterboxd-decal-dots-pos-rgb-500px.png");
-        lImg.setAttribute('height', '16px');
-        lImg.setAttribute('width', '16px');
-        ratings.appendChild(lImg)
-
-        const div = document.createElement("a");
-        div.setAttribute('href', `https://letterboxd.com/film/${titleWithYear}`)
-        div.innerText = rating + "/5.00";
-        div.classList.add("letterboxd-rating");
-        ratings.appendChild(div);
-
-      }
-    }
-  );
-
-  // check.
-  // what if we just send both titles through the message
-  // there's always a response tho, the 404 page is html we look through.
-  // how would we differienate the responses?
-  // do they send a status code?
-  // okay yeah check status code, if 404 then check other URL.
-
-  if (document.getElementsByClassName("letterboxd-rating").length < 1) {
+  let movieWithYear = await chrome.runtime.sendMessage({ title: titleWithYear });
+  if (!parseHTML(movieWithYear, titleWithYear)) {
     console.log(originalTitle)
-    chrome.runtime.sendMessage({ title: originalTitle },
-      html => {
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(html, 'text/html');
-
-        let rating = doc.getElementsByName("twitter:data2")
-        if (rating) {
-          rating = rating[0].content
-          if (rating) {
-            rating = rating.split(" ")[0]
-          }
-        }
-
-        const ratings = document.querySelector('[data-testid="metadata-ratings"]');
-        if (ratings) {
-          const lImg = document.createElement("img");
-          lImg.setAttribute('src', "chrome-extension://__MSG_@@ngilbhhfgkjkfllefakjhieneaoknbfn/../images/letterboxd-decal-dots-pos-rgb-500px.png");
-          lImg.setAttribute('height', '16px');
-          lImg.setAttribute('width', '16px');
-          ratings.appendChild(lImg)
-
-          const div = document.createElement("a");
-          div.setAttribute('href', `https://letterboxd.com/film/${originalTitle}`)
-          div.innerText = rating + "/5.00";
-          div.classList.add("letterboxd-rating");
-          ratings.appendChild(div);
-        }
-      }
-    );
+    let movieWithoutYear = await chrome.runtime.sendMessage({ title: originalTitle });
+    parseHTML(movieWithoutYear, originalTitle)
   }
+}
+
+function parseHTML(html, title) {
+  let parser = new DOMParser();
+  let doc = parser.parseFromString(html, 'text/html');
+
+  let rating = doc.getElementsByName("twitter:data2")
+  if (rating && rating[0]) {
+    rating = rating[0].content
+    if (rating) {
+      rating = rating.split(" ")[0]
+    }
+  } else {
+    return false;
+  }
+
+  const ratings = document.querySelector('[data-testid="metadata-ratings"]');
+  if (ratings) {
+    const lImg = document.createElement("img");
+    lImg.setAttribute('src', "chrome-extension://__MSG_@@ngilbhhfgkjkfllefakjhieneaoknbfn/../images/letterboxd-decal-dots-pos-rgb-500px.png");
+    lImg.setAttribute('height', '16px');
+    lImg.setAttribute('width', '16px');
+    ratings.appendChild(lImg)
+
+    const div = document.createElement("a");
+    div.setAttribute('href', `https://letterboxd.com/film/${title}`)
+    div.innerText = rating + "/5.00";
+    div.classList.add("letterboxd-rating");
+    ratings.appendChild(div);    
+
+    return true
+  }
+
+  return false;
 }
 
 function digitFromSuperscript(superChar) {

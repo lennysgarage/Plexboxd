@@ -7,11 +7,11 @@ chrome.runtime.onMessage.addListener(
                     "Content-Type": "text/html"
                 }
             }
-        ).then(function (response) {
+        ).then((response) => {
             return response.text();
-        }).then(function (html) {
+        }).then((html) => {
             sendResponse(html);
-        }).catch(function (err) {
+        }).catch((err) => {
             console.error("Something went wrong. ", err)
         });
 
