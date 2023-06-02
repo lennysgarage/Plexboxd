@@ -20,11 +20,11 @@ async function updateRatings() {
   console.log(titleWithYear)
 
   const movieWithYear = await chrome.runtime.sendMessage({ title: titleWithYear });
-  if (!parseHTML(movieWithYear, titleWithYear)) {
+  if (!updateSingleMovieRating(movieWithYear, titleWithYear)) {
     console.log(title)
     const movieWithoutYear = await chrome.runtime.sendMessage({ title: title });
 
-    parseHTML(movieWithoutYear, title)
+    updateSingleMovieRating(movieWithoutYear, title)
   }
 }
 
@@ -35,7 +35,6 @@ function parseMovieTitle(title) {
   title = title.replace(/\W/g, "-");
   title = title.replace(/--/g, "-");
   title = title.replace(/-$/, "");
-
 
   return title;
 }
@@ -50,7 +49,16 @@ function addYear(title) {
   return titleWithYear = title + "-" + year;
 }
 
-function parseHTML(html, title) {
+function updateSingleMovieRating(html, title) {
+  let rating;
+  rating = parseHTML(html)
+  if (rating) {
+    return addRating(title,rating)
+  }
+  return false;
+}
+
+function parseHTML(html) {
   let parser = new DOMParser();
   let doc = parser.parseFromString(html, 'text/html');
 
@@ -64,6 +72,10 @@ function parseHTML(html, title) {
     return false;
   }
 
+  return rating;
+}
+
+function addRating(title, rating) {
   const ratings = document.querySelector('[data-testid="metadata-ratings"]');
   if (ratings) {
     const lImg = document.createElement("img");
