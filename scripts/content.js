@@ -100,7 +100,6 @@ function addRating(title, rating, mode) {
   }
   if (ratings) {
     const span = document.createElement("span");
-    // span.classList.add("rating-container");
     ratings.appendChild(span);
     const div = document.createElement("div");
     div.classList.add('letterboxd-rating-container');
