@@ -19,7 +19,8 @@
       "js": ["scripts/content.js"],
       "css": ["letterboxd.css"],
       "matches": [
-        "https://app.plex.tv/desktop/*"
+        "https://app.plex.tv/desktop/*",
+        "http://127.0.0.1:32400/web/*"
       ]
     }
   ],

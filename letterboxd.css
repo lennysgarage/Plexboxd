@@ -1,6 +1,30 @@
 .letterboxd-rating {
     color: #FFFFFF;
     font-size: 12px;
+}
+
+.letterboxd-img {
     margin: auto;
     padding: auto;
+}
+
+.letterboxd-rating-container {
+    background-color: var(--color-background-card);
+    padding-left: var(--size-xs);
+    padding-right: var(--size-xs);
+    padding-top: 1px;
+    padding-bottom: var(--size-xxs);
+    border-radius: var(--border-radius-s);
+    color: var(--color-text-primary);
+    gap: var(--size-xs);
+    display: inline-flex;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    flex-shrink: 0;
+    flex-direction: row;
+    width: fit-content;
+    height: 24px;
+    margin: auto;
+    align-items: baseline;
 }
