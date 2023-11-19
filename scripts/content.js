@@ -31,10 +31,10 @@ async function updateRatings(mode) {
 
   const movieWithYear = await chrome.runtime.sendMessage({ title: titleWithYear });
   if (!updateSingleMovieRating(movieWithYear, titleWithYear, mode)) {
-    console.log(title)
+    console.log(title);
     const movieWithoutYear = await chrome.runtime.sendMessage({ title: title });
 
-    updateSingleMovieRating(movieWithoutYear, title, mode)
+    updateSingleMovieRating(movieWithoutYear, title, mode);
   }
 }
 
@@ -42,10 +42,11 @@ function parseMovieTitle(title) {
   title = title.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digitFromSuperscript);
   title = title.replace(/'/g, "");
   title = title.replace(/ & /g, "-");
+  title = title.replace(/\./g, ""); 
   title = title.replace(/\W/g, "-");
   title = title.replace(/--/g, "-");
   title = title.replace(/-$/, "");
-
+  
   return title;
 }
 
@@ -67,9 +68,9 @@ function addYear(title, mode) {
 
 function updateSingleMovieRating(html, title, mode) {
   let rating;
-  rating = parseHTML(html)
+  rating = parseHTML(html);
   if (rating) {
-    return addRating(title, rating, mode)
+    return addRating(title, rating, mode);
   }
   return false;
 }
@@ -78,11 +79,11 @@ function parseHTML(html) {
   let parser = new DOMParser();
   let doc = parser.parseFromString(html, 'text/html');
 
-  let rating = doc.getElementsByName("twitter:data2")
+  let rating = doc.getElementsByName("twitter:data2");
   if (rating && rating[0]) {
-    rating = rating[0].content
+    rating = rating[0].content;
     if (rating) {
-      rating = rating.split(" ")[0]
+      rating = rating.split(" ")[0];
     }
   } else {
     return false;
@@ -105,21 +106,20 @@ function addRating(title, rating, mode) {
     div.classList.add('letterboxd-rating-container');
     span.appendChild(div);
 
-
     const lImg = document.createElement("img");
     lImg.setAttribute('src', `chrome-extension://__MSG_@@${chrome.runtime.id}/../images/letterboxd-decal-dots-pos-rgb-500px.png`);
     lImg.setAttribute('width', '16px');
     lImg.setAttribute('height', '16px');
     lImg.classList.add('letterboxd-img');
-    div.appendChild(lImg)
+    div.appendChild(lImg);
 
     const a = document.createElement("a");
-    a.setAttribute('href', `https://letterboxd.com/film/${title}`)
+    a.setAttribute('href', `https://letterboxd.com/film/${title}`);
     a.innerText = rating + "/5.00";
     a.classList.add("letterboxd-rating");
     div.appendChild(a);
 
-    return true
+    return true;
   }
 
   return false;
