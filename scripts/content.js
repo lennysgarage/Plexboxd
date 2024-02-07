@@ -108,7 +108,8 @@ function addRating(title, rating, mode) {
     a.appendChild(div);
     
     const lImg = document.createElement("img");
-    lImg.setAttribute('src', `chrome-extension://__MSG_@@${chrome.runtime.id}/../images/letterboxd-decal-dots-pos-rgb-500px.png`);
+    let imagePath = browser.runtime.getURL("images/letterboxd-decal-dots-pos-rgb-500px.png");
+    lImg.setAttribute('src', imagePath);
     lImg.setAttribute('width', '16px');
     lImg.setAttribute('height', '16px');
     lImg.classList.add('letterboxd-img');
