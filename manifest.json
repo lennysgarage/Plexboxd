@@ -21,12 +21,13 @@
       "css": ["letterboxd.css"],
       "matches": [
         "https://app.plex.tv/desktop/*",
-        "http://127.0.0.1:32400/web/*"
+        "http://127.0.0.1:32400/web/*",
+        "http://127.0.0.1/web/*"
       ]
     }
   ],
   "background": {
-    "service_worker": "scripts/background.js"
+    "scripts": ["scripts/background.js"]
   },
   "host_permissions": ["https://letterboxd.com/*"]
 }
