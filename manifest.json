@@ -1,8 +1,14 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Plexboxd",
   "version": "1.2.0",
   "description": "View letterboxd ratings for your movies on plex.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "lennysgarage42@gmail.com",
+      "strict_min_version": "109.0"
+    }
+  },
 
   "icons": {
     "16": "images/icon-16.png",
@@ -11,10 +17,7 @@
     "192": "images/icon-192.png",
     "512": "images/icon-512.png"
   },
-  "web_accessible_resources": [{
-    "resources": ["images/letterboxd-decal-dots-pos-rgb-500px.png"],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": ["images/letterboxd-decal-dots-pos-rgb-500px.png"],
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
@@ -29,5 +32,5 @@
   "background": {
     "scripts": ["scripts/background.js"]
   },
-  "host_permissions": ["https://letterboxd.com/*"]
+  "permissions": ["https://letterboxd.com/*"]
 }
