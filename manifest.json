@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Plexboxd",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "View letterboxd ratings for your movies on plex.",
   "browser_specific_settings": {
     "gecko": {
