@@ -100,24 +100,24 @@ function addRating(title, rating, mode) {
     ratings = document.querySelector('[data-testid="preplay-mainTitle"]').parentElement.children[2];
   }
   if (ratings) {
-    const span = document.createElement("span");
-    ratings.appendChild(span);
+    const a = document.createElement("a");
+    a.setAttribute('href', `https://letterboxd.com/film/${title}`);
+    ratings.appendChild(a);
     const div = document.createElement("div");
     div.classList.add('letterboxd-rating-container');
-    span.appendChild(div);
-
+    a.appendChild(div);
+    
     const lImg = document.createElement("img");
     lImg.setAttribute('src', `chrome-extension://__MSG_@@${chrome.runtime.id}/../images/letterboxd-decal-dots-pos-rgb-500px.png`);
     lImg.setAttribute('width', '16px');
     lImg.setAttribute('height', '16px');
     lImg.classList.add('letterboxd-img');
     div.appendChild(lImg);
-
-    const a = document.createElement("a");
-    a.setAttribute('href', `https://letterboxd.com/film/${title}`);
-    a.innerText = rating + "/5.00";
-    a.classList.add("letterboxd-rating");
-    div.appendChild(a);
+    
+    const anotherAtt = document.createElement("a");
+    anotherAtt.innerText = rating;
+    anotherAtt.classList.add("letterboxd-rating");
+    div.appendChild(anotherAtt);
 
     return true;
   }
