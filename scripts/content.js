@@ -7,12 +7,15 @@ new MutationObserver(() => {
   if (document.querySelector(ratings) || document.querySelector(preplay)) {
     if (URL !== lastURL) {
       lastURL = URL;
+      removeExistingBadge();
       if (document.querySelector(ratings)) {
         updateRatings("plex");
       } else {
         updateRatings("local");
       }
     }
+  } else {
+    lastURL = null;
   }
 }).observe(document, { subtree: true, childList: true });
 
@@ -133,5 +136,10 @@ function digitFromSuperscript(superChar) {
   }
 
   return superChar;
+}
+
+function removeExistingBadge() {
+  const existing = document.querySelector('.letterboxd-rating-container');
+  if (existing) existing.closest('a').remove();
 }
 
